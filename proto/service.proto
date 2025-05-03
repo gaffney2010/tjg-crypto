@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package crud;
+
+option go_package = "./";
+
+service UserService {
+  rpc CreateUser (User) returns (User);
+  rpc GetUser (UserID) returns (User);
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+}
+
+message UserID {
+  int32 id = 1;
+}
