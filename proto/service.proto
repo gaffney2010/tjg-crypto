@@ -1,19 +1,61 @@
 syntax = "proto3";
 
-package crud;
+package crypto;
 
 option go_package = "./";
 
-service UserService {
-  rpc CreateUser (User) returns (User);
-  rpc GetUser (UserID) returns (User);
+message Game {
+  int32 date = 1;
+  string team_a = 2;
+  string team_b = 3;
 }
 
-message User {
-  int32 id = 1;
-  string name = 2;
+message Mapping {
+  string secondary = 1;
+  string primary = 2;
 }
 
-message UserID {
-  int32 id = 1;
+// Establish or extend source-of-truth
+message PrimarySeasonReq {
+  string namespace = 1;
+  repeated Game games = 2;
+}
+
+message PrimarySeasonResp {
+}
+
+// Creates a new dataset to be mapped
+message SecondarySeasonReq {
+  string namespace = 1;
+  repeated Game games = 2;
+  Mapping seed = 3;
+}
+
+message SecondarySeasonResp {
+  string status = 1;
+  repeated Game unmapped_games = 2;
+}
+
+message MapTeamsReq {
+  string namespace = 1;
+  repeated string teams = 2;
+}
+
+message MapTeamsResp {
+  repeated Mapping mapping = 1;
+}
+
+message DeleteNamespaceReq {
+  string namespace = 1;
+}
+
+message DeleteNamespaceResp {
+  string status = 1;
+}
+
+service CryptoService {
+  rpc PrimarySeason (PrimarySeasonReq) returns (PrimarySeasonResp);
+  rpc SecondarySeason (SecondarySeasonReq) return (SecondarySeasonResp);
+  rpc MapTeams (MapTeamsReq) return (MapTeamsResp);
+  rpc DeleteNamespace (DeleteNamespaceReq) return (DeleteNamespaceResp);
 }
