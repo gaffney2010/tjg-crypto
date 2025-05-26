@@ -10,7 +10,7 @@ APIs will:
 - Accept another datasource of games with an initial mapping
 - Get source-of-truth team name from a variant.
 
-For the moment, I'm using a placeholder helloworld.
+Note:  This will not work is any team plays twice on a single date.
 
 ## API
 
@@ -46,11 +46,11 @@ CREATE TABLE IF NOT EXISTS mapping (
 To test, start up the docker containers, then:
 
 ```
-grpcurl -plaintext -d '{"namespace": "<TESTNS>", "games": [{"date": 1, "team_a": "A", "team_b": "B"}, {"date": 2, "team_a": "C", "team_b": "B"}, {"date": 2, "team_a": "C", "team_b": "D"}' localhost:50051 crypto.CryptoService/PrimarySeasonReq
+grpcurl -plaintext -d '{"namespace": "<TESTNS>", "games": [{"date": 1, "team_a": "A", "team_b": "B"}, {"date": 2, "team_a": "C", "team_b": "B"}, {"date": 3, "team_a": "C", "team_b": "D"}]}' localhost:50051 crypto.CryptoService/PrimarySeason
 ```
 
 ```
-grpcurl -plaintext -d '{"namespace": "<TESTNS>", "games": [{"date": 1, "team_a": "a", "team_b": "b"}, {"date": 2, "team_a": "b", "team_b": "c"}, {"date": 2, "team_a": "d", "team_b": "c"}, "seed": {"secondary": "a", "primary": "A"}' localhost:50051 crypto.CryptoService/SecondarySeasonReq
+grpcurl -plaintext -d '{"namespace": "<TESTNS>", "games": [{"date": 1, "team_a": "a", "team_b": "b"}, {"date": 2, "team_a": "b", "team_b": "c"}, {"date": 3, "team_a": "d", "team_b": "c"}], "seed": {"secondary": "a", "primary": "A"}}' localhost:50051 crypto.CryptoService/SecondarySeason
 ```
 
 Should return map {"c": "C", "d": "D", "D": "D"}:
@@ -75,4 +75,13 @@ go mod tidy
 
 To update the proto generated files:  Run `protoc --go_out=proto --go-grpc_out=. ../proto/service.proto --proto_path=../proto` from `go-service`.  (May need to install some packages.)
 
+If you can't find protoc or some other program, try:
 
+```
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
+```
+
+## pgadmin
+
+To log in, go to `http://localhost:5050`.  Login with 'admin@example.com' and 'admin'.  If no server exists, "Add New Server".  Use host=db, user=user, password=password, per docker-compose file.

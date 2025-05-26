@@ -12,7 +12,7 @@ message Game {
 
 message Mapping {
   string secondary = 1;
-  string primary = 2;
+  optional string primary = 2;
 }
 
 // Establish or extend source-of-truth
@@ -22,6 +22,7 @@ message PrimarySeasonReq {
 }
 
 message PrimarySeasonResp {
+  string status = 1;
 }
 
 // Creates a new dataset to be mapped
@@ -42,7 +43,8 @@ message MapTeamsReq {
 }
 
 message MapTeamsResp {
-  repeated Mapping mapping = 1;
+  string status = 1;
+  repeated Mapping mapping = 2;
 }
 
 message DeleteNamespaceReq {
@@ -55,7 +57,7 @@ message DeleteNamespaceResp {
 
 service CryptoService {
   rpc PrimarySeason (PrimarySeasonReq) returns (PrimarySeasonResp);
-  rpc SecondarySeason (SecondarySeasonReq) return (SecondarySeasonResp);
-  rpc MapTeams (MapTeamsReq) return (MapTeamsResp);
-  rpc DeleteNamespace (DeleteNamespaceReq) return (DeleteNamespaceResp);
+  rpc SecondarySeason (SecondarySeasonReq) returns (SecondarySeasonResp);
+  rpc MapTeams (MapTeamsReq) returns (MapTeamsResp);
+  rpc DeleteNamespace (DeleteNamespaceReq) returns (DeleteNamespaceResp);
 }

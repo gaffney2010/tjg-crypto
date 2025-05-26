@@ -21,7 +21,7 @@ func main() {
 	}
 
 	grpcServer := grpc.NewServer()
-	pb.RegisterUserServiceServer(grpcServer, &server.UserServer{})
+	pb.RegisterCryptoServiceServer(grpcServer, &server.CryptoServer{})
 	// Enable reflection
 	reflection.Register(grpcServer)
 
